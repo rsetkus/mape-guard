@@ -16,9 +16,14 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
-    compile 'com.android.tools.lint:lint:26.2.1'
-    compile 'com.android.tools.lint:lint-api:26.2.1'
-    compile 'com.android.tools.lint:lint-checks:26.2.1'
+    implementation 'com.android.tools.lint:lint:26.2.1'
+    implementation 'com.android.tools.lint:lint-api:26.2.1'
+    implementation 'com.android.tools.lint:lint-checks:26.2.1'
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation "com.android.tools.lint:lint:26.2.1"
+    testImplementation "com.android.tools.lint:lint-tests:26.2.1"
+    testImplementation "com.android.tools:testutils:26.2.1"
 }
 
 compileKotlin {
