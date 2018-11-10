@@ -1,2 +1,3 @@
 rootProject.name = 'mape-warden'
+include 'mape-wared-testsource'
 
