@@ -1,6 +1,6 @@
 package lt.setkus.mapewarden
 
-import lt.setkus.mapewarden.rx.RxOnErrorDetector
+import lt.setkus.mapewarden.rx.ISSUE_ON_ERROR_CALL
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -16,6 +16,6 @@ class MapeWardenIssueRegistryTest {
 
     @Test
     fun `expected that RxOnError issue exists in registry`() {
-        assertThat(mapeWardenRegistry.issues).contains(RxOnErrorDetector.issue)
+        assertThat(mapeWardenRegistry.issues).contains(ISSUE_ON_ERROR_CALL)
     }
 }

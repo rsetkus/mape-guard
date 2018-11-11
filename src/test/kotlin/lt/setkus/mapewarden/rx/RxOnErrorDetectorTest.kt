@@ -1,47 +1,51 @@
 package lt.setkus.mapewarden.rx
 
-import com.android.tools.lint.checks.infrastructure.LintDetectorTest
-import com.android.tools.lint.checks.infrastructure.TestFiles
+import com.android.tools.lint.checks.infrastructure.TestFiles.java
+import com.android.tools.lint.checks.infrastructure.TestLintTask.lint
+import lt.setkus.mapewarden.rxJava2
+import org.junit.Test
 
-class RxOnErrorDetectorTest : LintDetectorTest() {
+class RxOnErrorDetectorTest {
 
-    override fun getDetector() = RxOnErrorDetector()
-
-    override fun getIssues() = listOf(RxOnErrorDetector.issue)
-
+    @Test
     fun `test Observable create with onError call`() {
-        val result = lintProject(TestFiles.java(
-                "package lt.setkus.mapewarden.testsource;\n" +
-                "\n" +
-                "import io.reactivex.Observable;\n" +
-                "\n" +
-                "import java.io.IOException;\n" +
-                "import java.util.Random;\n" +
-                "\n" +
-                "public class ObservableProducer {\n" +
-                "\n" +
-                "    public Observable<Integer> getIntegerObservable() {\n" +
-                "        return Observable.create(e -> {\n" +
-                "            try {\n" +
-                "                for (int i : getIntegerInput()) {\n" +
-                "                    e.onNext(i);\n" +
-                "                }\n" +
-                "                e.onComplete();\n" +
-                "            } catch (Exception ex) {\n" +
-                "                e.onError(ex);\n" +
-                "            }\n" +
-                "        });\n" +
-                "    }\n" +
-                "\n" +
-                "    private int[] getIntegerInput() throws IOException {\n" +
-                "        int[] stream = {1, 2, 3};\n" +
-                "        Random random = new Random(System.currentTimeMillis());\n" +
-                "        if (random.nextInt() % 2 == 0) {\n" +
-                "            throw new IOException(\"Random error\");\n" +
-                "        }\n" +
-                "        return stream;\n" +
-                "    }\n" +
-                "}"))
-        assertEquals("", result)
+        lint().files(rxJava2(), java("""
+            package foo;
+
+            import io.reactivex.Observable;
+
+            import java.io.IOException;
+            import java.util.Random;
+
+            public class ObservableProducer {
+
+                public Observable<Integer> getIntegerObservable() {
+                    return Observable.create(e -> {
+                        try {
+                            for (int i : getIntegerInput()) {
+                                e.onNext(i);
+                            }
+                            e.onComplete();
+                        } catch (Exception ex) {
+                            e.onError(ex);
+                        }
+                    });
+                }
+
+                private int[] getIntegerInput() throws IOException {
+                    int[] stream = {1, 2, 3};
+                    Random random = new Random(System.currentTimeMillis());
+                    if (random.nextInt() % 2 == 0) {
+                        throw new IOException("Random error");
+                    }
+                    return stream;
+                }
+            }""".trimIndent()).indented())
+                .issues(ISSUE_ON_ERROR_CALL)
+                .run()
+                .expect("src/foo/ObservableProducer.java:18: Error: Using onError might cause a crash. [RxJava]\n" +
+                        "                e.onError(ex);\n" +
+                        "                  ~~~~~~~\n" +
+                        "1 errors, 0 warnings".trimIndent())
     }
 }
