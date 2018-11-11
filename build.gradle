@@ -37,6 +37,13 @@ jar {
     }
 }
 
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "short"
+    }
+}
+
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
