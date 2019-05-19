@@ -10,7 +10,7 @@ class RxOnErrorDetectorTest {
     @Test
     fun `test Observable create with onError call`() {
         val expectedError = """
-            src/foo/ObservableProducer.java:18: Error: Using onError might cause a crash. [RxJava]
+            src/foo/ObservableProducer.java:17: Error: Using onError might cause a crash. [RxJava]
                 e.onError(ex);
                   ~~~~~~~
 1 errors, 0 warnings
@@ -20,8 +20,7 @@ class RxOnErrorDetectorTest {
 
             import io.reactivex.Observable;
 
-            import java.io.IOException;
-            import java.util.Random;
+            import static foo.Utils.getIntegerInput;
 
             public class ObservableProducer {
 
@@ -36,15 +35,6 @@ class RxOnErrorDetectorTest {
                             e.onError(ex);
                         }
                     });
-                }
-
-                private int[] getIntegerInput() throws IOException {
-                    int[] stream = {1, 2, 3};
-                    Random random = new Random(System.currentTimeMillis());
-                    if (random.nextInt() % 2 == 0) {
-                        throw new IOException("Random error");
-                    }
-                    return stream;
                 }
             }""".trimIndent()).indented())
                 .issues(ISSUE_ON_ERROR_CALL)
@@ -89,5 +79,67 @@ class RxOnErrorDetectorTest {
                 .issues(ISSUE_ON_ERROR_CALL)
                 .run()
                 .expect(expectedError.trimIndent())
+    }
+
+    @Test
+    fun `tryOnError method call shouldn't report error`() {
+        lint().files(rxJava2(), java("""
+            package foo;
+
+            import io.reactivex.Observable;
+
+            import static foo.Utils.getIntegerInput;
+
+            public class ObservableProducerWithTryOnErrorHandler {
+
+                public Observable<Integer> getIntegerObservable() {
+                    return Observable.create(e -> {
+                        try {
+                            for (int i : getIntegerInput()) {
+                                e.onNext(i);
+                            }
+                            e.onComplete();
+                        } catch (Exception ex) {
+                            e.tryOnError(ex);
+                        }
+                    });
+                }
+            }
+        """.trimIndent()).indented())
+                .issues(ISSUE_ON_ERROR_CALL)
+                .run()
+                .expectClean()
+    }
+
+    @Test
+    fun `tryOnError method reference call shouldn't report error`() {
+        lint().files(rxJava2(), java("""
+            package foo;
+
+            import io.reactivex.Observable;
+
+            public class ObservableTryOnErrorMethodReferenceProducer {
+                private Listener listener = new Listener();
+
+                public Observable<Integer> produceObservable() {
+                    return Observable.create(e -> {
+                        listener.doOnError(e::tryOnError);
+                    });
+                }
+
+                class Listener {
+                    void doOnError(ObservableMethodReferenceProducer.ErrorListener errorListener) {
+
+                    }
+                }
+
+                interface ErrorListener {
+                    void onError(Exception e);
+                }
+            }
+        """.trimIndent()).indented())
+                .issues(ISSUE_ON_ERROR_CALL)
+                .run()
+                .expectClean()
     }
 }

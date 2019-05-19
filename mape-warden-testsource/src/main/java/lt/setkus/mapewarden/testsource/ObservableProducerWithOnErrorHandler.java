@@ -2,10 +2,9 @@ package lt.setkus.mapewarden.testsource;
 
 import io.reactivex.Observable;
 
-import java.io.IOException;
-import java.util.Random;
+import static lt.setkus.mapewarden.testsource.Utils.getIntegerInput;
 
-public class ObservableProducer {
+public class ObservableProducerWithOnErrorHandler {
 
     public Observable<Integer> getIntegerObservable() {
         return Observable.create(e -> {
@@ -18,14 +17,5 @@ public class ObservableProducer {
                 e.onError(ex);
             }
         });
-    }
-
-    private int[] getIntegerInput() throws IOException {
-        int[] stream = {1, 2, 3};
-        Random random = new Random(System.currentTimeMillis());
-        if (random.nextInt() % 2 == 0) {
-            throw new IOException("Random error");
-        }
-        return stream;
     }
 }
