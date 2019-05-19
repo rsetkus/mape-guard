@@ -9,6 +9,12 @@ class RxOnErrorDetectorTest {
 
     @Test
     fun `test Observable create with onError call`() {
+        val expectedError = """
+            src/foo/ObservableProducer.java:18: Error: Using onError might cause a crash. [RxJava]
+                e.onError(ex);
+                  ~~~~~~~
+1 errors, 0 warnings
+        """
         lint().files(rxJava2(), java("""
             package foo;
 
@@ -43,14 +49,18 @@ class RxOnErrorDetectorTest {
             }""".trimIndent()).indented())
                 .issues(ISSUE_ON_ERROR_CALL)
                 .run()
-                .expect("src/foo/ObservableProducer.java:18: Error: Using onError might cause a crash. [RxJava]\n" +
-                        "                e.onError(ex);\n" +
-                        "                  ~~~~~~~\n" +
-                        "1 errors, 0 warnings".trimIndent())
+                .expect(expectedError.trimIndent())
     }
 
     @Test
     fun `onError method reference call should be reported`() {
+        val expectedError = """
+            src/foo/ObservableMethodReferenceProducer.java:11: Error: Using onError might cause a crash. [RxJava]
+            listener.doOnError(e::onError);
+                               ~~~~~~~~~~
+1 errors, 0 warnings
+        """
+
         lint().files(rxJava2(), java("""
             package foo;
 
@@ -78,9 +88,6 @@ class RxOnErrorDetectorTest {
             }""".trimIndent()).indented())
                 .issues(ISSUE_ON_ERROR_CALL)
                 .run()
-                .expect("src/foo/ObservableMethodReferenceProducer.java:18: Error: Using onError might cause a crash. [RxJava]\n" +
-                        "                e.onError(ex);\n" +
-                        "                  ~~~~~~~\n" +
-                        "1 errors, 0 warnings".trimIndent())
+                .expect(expectedError.trimIndent())
     }
 }
