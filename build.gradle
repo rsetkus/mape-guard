@@ -28,7 +28,7 @@ dependencies {
 }
 
 jar {
-    baseName 'lt.setkus.mapewarden'
+    baseName 'mapewarden'
     version '1.0'
 
     manifest {

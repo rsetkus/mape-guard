@@ -48,4 +48,39 @@ class RxOnErrorDetectorTest {
                         "                  ~~~~~~~\n" +
                         "1 errors, 0 warnings".trimIndent())
     }
+
+    @Test
+    fun `onError method reference call should be reported`() {
+        lint().files(rxJava2(), java("""
+            package foo;
+
+            import io.reactivex.Observable;
+
+            public class ObservableMethodReferenceProducer {
+
+                private Listener listener = new Listener();
+
+                public Observable<Integer> produceObservable() {
+                    return Observable.create(e -> {
+                        listener.doOnError(e::onError);
+                    });
+                }
+
+                class Listener {
+                    void doOnError(ErrorListener errorListener) {
+
+                    }
+                }
+
+                interface ErrorListener {
+                    void onError(Exception e);
+                }
+            }""".trimIndent()).indented())
+                .issues(ISSUE_ON_ERROR_CALL)
+                .run()
+                .expect("src/foo/ObservableMethodReferenceProducer.java:18: Error: Using onError might cause a crash. [RxJava]\n" +
+                        "                e.onError(ex);\n" +
+                        "                  ~~~~~~~\n" +
+                        "1 errors, 0 warnings".trimIndent())
+    }
 }
