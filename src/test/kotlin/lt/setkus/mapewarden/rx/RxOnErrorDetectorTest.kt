@@ -1,6 +1,7 @@
 package lt.setkus.mapewarden.rx
 
 import com.android.tools.lint.checks.infrastructure.TestFiles.java
+import com.android.tools.lint.checks.infrastructure.TestFiles.kotlin
 import com.android.tools.lint.checks.infrastructure.TestLintTask.lint
 import lt.setkus.mapewarden.rxJava2
 import org.junit.Test
@@ -136,6 +137,69 @@ class RxOnErrorDetectorTest {
                 interface ErrorListener {
                     void onError(Exception e);
                 }
+            }
+        """.trimIndent()).indented())
+                .issues(ISSUE_ON_ERROR_CALL)
+                .run()
+                .expectClean()
+    }
+
+    @Test
+    fun `onError method call in Kotlin should report error`() {
+        lint().files(rxJava2(), kotlin("""
+            package foo
+
+            import io.reactivex.Observable
+
+            import foo.Utils.getIntegerInput
+
+            class ObservableWithOnErrorMethodCall {
+
+                val integerObservable: Observable<Int>
+                    get() = Observable.create { e ->
+                        try {
+                            for (i in getIntegerInput()) {
+                                e.onNext(i)
+                            }
+                            e.onComplete()
+                        } catch (ex: Exception) {
+                            e.onError(ex)
+                        }
+                    }
+            }
+        """.trimIndent()).indented()).
+                issues(ISSUE_ON_ERROR_CALL)
+                .run()
+                .expect("""
+                    src/foo/ObservableWithOnErrorMethodCall.kt:17: Error: Using onError might cause a crash. [RxJava]
+                e.onError(ex)
+                  ~~~~~~~
+1 errors, 0 warnings
+                """.trimIndent())
+    }
+
+    @Test
+    fun `tryOnError method call should not report error`() {
+        lint().files(rxJava2(), kotlin("""
+            package foo
+
+            import io.reactivex.Observable
+
+            import foo.Utils.getIntegerInput
+
+            class ObservableTryOnErrorMethodCall {
+
+                val integerObservable: Observable<Int>
+                    get() = Observable.create { e ->
+                        try {
+                            for (i in getIntegerInput()) {
+                                e.onNext(i)
+                            }
+                            e.onComplete()
+                        } catch (ex: Exception) {
+                            e.tryOnError(ex)
+                        }
+                    }
             }
         """.trimIndent()).indented())
                 .issues(ISSUE_ON_ERROR_CALL)
