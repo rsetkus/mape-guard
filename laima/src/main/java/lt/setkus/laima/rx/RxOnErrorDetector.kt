@@ -1,4 +1,4 @@
-package lt.setkus.mapewarden.rx
+package lt.setkus.laima.rx
 
 import com.android.tools.lint.client.api.UElementHandler
 import com.android.tools.lint.detector.api.Category.Companion.CORRECTNESS

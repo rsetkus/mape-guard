@@ -1,8 +1,8 @@
-package lt.setkus.mapewarden.testsource;
+package lt.setkus.laima.testsource;
 
 import io.reactivex.Observable;
 
-import static lt.setkus.mapewarden.testsource.Utils.getIntegerInput;
+import static lt.setkus.laima.testsource.Utils.getIntegerInput;
 
 public class ObservableProducerWithOnErrorHandler {
 

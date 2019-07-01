@@ -1,4 +1,4 @@
-package lt.setkus.mapewarden.testsource;
+package lt.setkus.laima.testsource;
 
 import io.reactivex.Observable;
 

@@ -1,9 +1,9 @@
-package lt.setkus.mapewarden.rx
+package lt.setkus.laima.rx
 
 import com.android.tools.lint.checks.infrastructure.TestFiles.java
 import com.android.tools.lint.checks.infrastructure.TestFiles.kotlin
 import com.android.tools.lint.checks.infrastructure.TestLintTask.lint
-import lt.setkus.mapewarden.rxJava2
+import lt.setkus.laima.rxJava2
 import org.junit.Test
 
 class RxOnErrorDetectorTest {

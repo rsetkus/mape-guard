@@ -1,0 +1,35 @@
+apply plugin: 'kotlin'
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "short"
+    }
+}
+
+jar {
+    baseName 'laima'
+    version '1.0'
+
+    manifest {
+        attributes 'Manifest-Version': 1.0
+        attributes('Lint-Registry': 'lt.setkus.laima.MapeWardenIssueRegistry')
+    }
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    implementation "com.android.tools.lint:lint:$android_lint_version"
+    implementation "com.android.tools.lint:lint-api:$android_lint_version"
+    implementation "com.android.tools.lint:lint-checks:$android_lint_version"
+
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "org.assertj:assertj-core:$assertj_core_version"
+    testImplementation "com.android.tools.lint:lint:$android_lint_version"
+    testImplementation "com.android.tools.lint:lint-tests:$android_lint_version"
+    testImplementation "com.android.tools:testutils:$android_lint_version"
+}

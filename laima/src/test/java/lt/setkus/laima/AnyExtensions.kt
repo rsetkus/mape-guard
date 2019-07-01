@@ -1,4 +1,4 @@
-package lt.setkus.mapewarden
+package lt.setkus.laima
 
 import com.android.tools.lint.checks.infrastructure.TestFiles.bytes
 

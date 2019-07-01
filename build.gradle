@@ -1,52 +1,31 @@
-plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.71'
-}
+buildscript {
 
-group 'lt.setkus'
-version '1.0-SNAPSHOT'
-
-repositories {
-    maven {
-        url "https://maven.google.com"
+    ext {
+        kotlin_version = '1.3.31'
+        android_gradle_version = '3.4.1'
+        android_lint_version = '26.2.1'
+        junit_version = '4.12'
+        assertj_core_version = '3.0.0'
     }
-    jcenter()
-    mavenCentral()
-}
 
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    repositories {
+        google()
+        jcenter()
+    }
 
-    implementation 'com.android.tools.lint:lint:26.2.1'
-    implementation 'com.android.tools.lint:lint-api:26.2.1'
-    implementation 'com.android.tools.lint:lint-checks:26.2.1'
-
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.assertj:assertj-core:3.0.0'
-    testImplementation "com.android.tools.lint:lint:26.2.1"
-    testImplementation "com.android.tools.lint:lint-tests:26.2.1"
-    testImplementation "com.android.tools:testutils:26.2.1"
-}
-
-jar {
-    baseName 'mapewarden'
-    version '1.0'
-
-    manifest {
-        attributes 'Manifest-Version': 1.0
-        attributes('Lint-Registry': 'lt.setkus.mapewarden.MapeWardenIssueRegistry')
+    dependencies {
+        classpath "com.android.tools.build:gradle:$android_gradle_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
-test {
-    testLogging {
-        events "passed", "skipped", "failed"
-        exceptionFormat "short"
+allprojects {
+    repositories {
+        google()
+        jcenter()
     }
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }

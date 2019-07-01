@@ -1,6 +1,6 @@
-package lt.setkus.mapewarden
+package lt.setkus.laima
 
-import lt.setkus.mapewarden.rx.ISSUE_ON_ERROR_CALL
+import lt.setkus.laima.rx.ISSUE_ON_ERROR_CALL
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
