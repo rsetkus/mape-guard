@@ -20,6 +20,10 @@ jar {
 sourceCompatibility = "8"
 targetCompatibility = "8"
 
+configurations {
+    lintChecks
+}
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
