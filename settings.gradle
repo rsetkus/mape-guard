@@ -1,4 +1,3 @@
-include ':laima'
 rootProject.name = 'mape-warden'
-include 'mape-warden-testsource'
+include ':laima'
 
