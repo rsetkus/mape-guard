@@ -10,11 +10,11 @@ test {
 
 jar {
     baseName 'laima'
-    version '1.0'
+    version '1.0.1'
 
     manifest {
         attributes 'Manifest-Version': 1.0
-        attributes('Lint-Registry': 'lt.setkus.laima.MapeWardenIssueRegistry')
+        attributes('Lint-Registry-v2': 'lt.setkus.laima.MapeWardenIssueRegistry')
     }
 }
 
