@@ -11,11 +11,12 @@ class RxOnErrorDetectorTest {
     @Test
     fun `test Observable create with onError call`() {
         val expectedError = """
-            src/foo/ObservableProducer.java:17: Error: Using onError might cause a crash. [RxJava]
-                e.onError(ex);
-                  ~~~~~~~
-1 errors, 0 warnings
-        """
+            |src/foo/ObservableProducer.java:17: Error: Using onError might cause a crash. [RxJava]
+            |                e.onError(ex);
+            |                  ~~~~~~~
+            |1 errors, 0 warnings
+        """.trimMargin()
+
         lint().files(rxJava2(), java("""
             package foo;
 
@@ -40,17 +41,17 @@ class RxOnErrorDetectorTest {
             }""".trimIndent()).indented())
                 .issues(ISSUE_ON_ERROR_CALL)
                 .run()
-                .expect(expectedError.trimIndent())
+                .expect(expectedError)
     }
 
     @Test
     fun `onError method reference call should be reported`() {
         val expectedError = """
-            src/foo/ObservableMethodReferenceProducer.java:11: Error: Using onError might cause a crash. [RxJava]
-            listener.doOnError(e::onError);
-                               ~~~~~~~~~~
-1 errors, 0 warnings
-        """
+            |src/foo/ObservableMethodReferenceProducer.java:11: Error: Using onError might cause a crash. [RxJava]
+            |            listener.doOnError(e::onError);
+            |                               ~~~~~~~~~~
+            |1 errors, 0 warnings
+            """.trimMargin()
 
         lint().files(rxJava2(), java("""
             package foo;
@@ -79,7 +80,7 @@ class RxOnErrorDetectorTest {
             }""".trimIndent()).indented())
                 .issues(ISSUE_ON_ERROR_CALL)
                 .run()
-                .expect(expectedError.trimIndent())
+                .expect(expectedError)
     }
 
     @Test
@@ -171,11 +172,11 @@ class RxOnErrorDetectorTest {
                 issues(ISSUE_ON_ERROR_CALL)
                 .run()
                 .expect("""
-                    src/foo/ObservableWithOnErrorMethodCall.kt:17: Error: Using onError might cause a crash. [RxJava]
-                e.onError(ex)
-                  ~~~~~~~
-1 errors, 0 warnings
-                """.trimIndent())
+                    |src/foo/ObservableWithOnErrorMethodCall.kt:17: Error: Using onError might cause a crash. [RxJava]
+                    |                e.onError(ex)
+                    |                  ~~~~~~~
+                    |1 errors, 0 warnings
+                """.trimMargin())
     }
 
     @Test
